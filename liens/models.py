@@ -103,8 +103,8 @@ class Lien(models.Model):
 
         # Gestion des liens mailto:
         if url_lower.startswith('mailto:'):
-            # Extraire l'adresse email (avant le ? s'il y en a un)
-            email_part = url_lower.replace('mailto:', '').split('?')[0]
+            # Extraire l'adresse email
+            email_part = url_lower.replace('mailto:', '')
             email_address = email_part.strip()
 
             if '@gmail.com' in email_address or '@googlemail.com' in email_address:
@@ -145,8 +145,8 @@ class Lien(models.Model):
 
         # Gestion des liens mailto:
         if url.startswith('mailto:'):
-            # Extraire l'adresse email (avant le ? s'il y en a un pour les paramètres comme subject)
-            email_part = url.replace('mailto:', '').split('?')[0]
+            # Extraire l'adresse email
+            email_part = url.replace('mailto:', '')
             email_address = email_part.strip()
             return email_address
 

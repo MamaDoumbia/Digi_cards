@@ -252,7 +252,7 @@
                                placeholder="contact@exemple.com">
                         <div class="form-text client-modal-help">
                             <i class="bi bi-info-circle me-1"></i>
-                            En cliquant sur ce lien, l'application de messagerie s'ouvrira avec cette adresse comme destinataire.
+                            En cliquant sur ce lien, l'application de messagerie s'ouvrira avec cette adresse comme destinataire et la fenêtre de rédaction d'email.
                         </div>
                     </div>
 
@@ -269,7 +269,7 @@
 
                     <div class="alert" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; color: #d1d5db;">
                         <i class="bi bi-lightbulb me-2" style="color: #3b82f6;"></i>
-                        <strong>Astuce :</strong> L'icône sera automatiquement choisie selon le domaine de l'adresse email (Gmail, Outlook, Yahoo, etc.). Le lien ouvrira l'application email par défaut avec le destinataire et le sujet pré-remplis.
+                        <strong>Astuce :</strong> L'icône sera automatiquement choisie selon le domaine de l'adresse email (Gmail, Outlook, Yahoo, etc.). Le lien ouvrira l'application email par défaut avec le destinataire pré-rempli.
                     </div>
 
                     <!-- Champ caché pour l'URL -->
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (email) {
                 // Vérifier que l'email a un format valide avant de créer l'URL
                 if (email.includes('@') && email.includes('.')) {
-                    emailUrlInput.value = 'mailto:' + email + '?subject=Contact';
+                    emailUrlInput.value = 'mailto:' + email;
                 } else {
                     emailUrlInput.value = '';
                 }
@@ -372,8 +372,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Veuillez saisir une adresse email valide.');
                     return false;
                 }
-                // Régénérer l'URL au cas où
-                emailUrlInput.value = 'mailto:' + email + '?subject=Contact';
+                // Générer l'URL mailto simple
+                emailUrlInput.value = 'mailto:' + email;
             });
         }
     }
