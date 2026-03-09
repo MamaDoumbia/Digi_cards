@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1e21f95b-c068-42c1-a466-a8648cda2b88" name="Changes" comment="ajouts d'email">
-      <change beforePath="$PROJECT_DIR$/liens/templates/liens/dashboard/client_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/liens/templates/liens/dashboard/client_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/liens/templates/liens/public/profil.html" beforeDir="false" afterPath="$PROJECT_DIR$/liens/templates/liens/public/profil.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,7 +188,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773051399525</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="ajouts d'email">
+      <option name="closed" value="true" />
+      <created>1773052165762</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1773052165762</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

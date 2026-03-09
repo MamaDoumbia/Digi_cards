@@ -474,7 +474,7 @@
                 {% if liens %}
                     <div class="links-container">
                         {% for lien in liens %}
-                        <a href="{{ lien.url }}" target="_blank" class="link-btn">
+                        <a href="{{ lien.url }}" {% if not lien.url|lower|slice:":7" == "mailto:" %}target="_blank"{% endif %} class="link-btn">
                             {% load static %}
                             {% if lien.get_icon %}
                                 <div class="link-icon-bg" style="background-image: url('{% static lien.get_icon %}');"></div>
