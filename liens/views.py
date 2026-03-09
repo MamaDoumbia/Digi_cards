@@ -109,11 +109,13 @@ def client_create(request):
 @login_required
 def client_detail(request, pk):
     client = get_object_or_404(Client, pk=pk)
-    liens = client.lien_set.all().order_by('ordre', 'date_creation')
+    liens = client.lien_set.filter(url__startswith='http').order_by('ordre', 'date_creation')
+    emails = client.lien_set.filter(url__startswith='mailto:').order_by('ordre', 'date_creation')
 
     context = {
         'client': client,
         'liens': liens,
+        'emails': emails,
         'public_url_absolute': request.build_absolute_uri(client.get_public_url()),
     }
     return render(request, 'liens/dashboard/client_detail.html', context)
@@ -170,23 +172,46 @@ def lien_create(request, client_pk):
     client = get_object_or_404(Client, pk=client_pk)
 
     if request.method == 'POST':
-        titre = request.POST.get('titre', '').strip()
-        url = request.POST.get('url', '').strip()
+        is_email = request.POST.get('is_email') == 'true'
 
-        if titre and url:
-            # Ajouter automatiquement http:// si pas de protocole
-            if not url.startswith(('http://', 'https://', 'mailto:')):
-                url = 'https://' + url
+        if is_email:
+            # Traitement pour les emails
+            email_address = request.POST.get('email_address', '').strip()
+            titre = request.POST.get('titre', '').strip()
 
-            Lien.objects.create(
-                client=client,
-                titre=titre,
-                url=url
-            )
-            messages.success(request, f'Lien "{titre}" ajouté avec succès!')
-            return redirect('liens:client_detail', pk=client.pk)
+            if email_address and titre:
+                url = 'mailto:' + email_address
+                lien = Lien.objects.create(
+                    client=client,
+                    titre=titre,
+                    url=url
+                )
+                messages.success(request, f'Email "{titre}" ajouté avec succès!')
+                return redirect('liens:client_detail', pk=client.pk)
+            else:
+                messages.error(request, 'L\'adresse email et le titre sont obligatoires.')
         else:
-            messages.error(request, 'Le titre et l\'URL sont obligatoires.')
+            # Traitement pour les liens classiques
+            titre = request.POST.get('titre', '').strip()
+            url = request.POST.get('url', '').strip()
+
+            if titre and url:
+                # Détection automatique email
+                if '@' in url and not url.startswith('mailto:'):
+                    url = 'mailto:' + url
+                # Lien web classique
+                elif not url.startswith(('http://', 'https://', 'mailto:')):
+                    url = 'https://' + url
+
+                lien = Lien.objects.create(
+                    client=client,
+                    titre=titre,
+                    url=url
+                )
+                messages.success(request, f'Lien "{titre}" ajouté avec succès!')
+                return redirect('liens:client_detail', pk=client.pk)
+            else:
+                messages.error(request, 'Le titre et l\'URL sont obligatoires.')
 
     context = {'client': client}
     return render(request, 'liens/dashboard/lien_form.html', context)
@@ -201,7 +226,11 @@ def lien_edit(request, pk):
         url = request.POST.get('url', '').strip()
 
         if titre and url:
-            if not url.startswith(('http://', 'https://')):
+            # Détection automatique email pour l'édition
+            if '@' in url and not url.startswith('mailto:'):
+                url = 'mailto:' + url
+            # Lien web classique
+            elif not url.startswith(('http://', 'https://', 'mailto:')):
                 url = 'https://' + url
 
             lien.titre = titre

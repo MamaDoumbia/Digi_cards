@@ -129,31 +129,25 @@
         <div class="col-lg-4 mb-4">
             <div class="card client-stats-card">
                 <div class="card-body text-center">
-                    <div class="client-stats-number">{{ liens.count }}</div>
-                    <h6 class="client-stats-label">Lien{{ liens.count|pluralize }} configuré{{ liens.count|pluralize }}</h6>
+                    <div class="client-stats-number">{% widthratio liens.count|add:emails.count 1 1 %}</div>
+                    <h6 class="client-stats-label">Contact{{ liens.count|add:emails.count|pluralize }} configuré{{ liens.count|add:emails.count|pluralize }}</h6>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Liste des liens -->
-    <div class="card" style="background: #111111; border: 1px solid #374151; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+    <div class="card mb-4" style="background: #111111; border: 1px solid #374151; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 style="color: #ffffff; margin-bottom: 0; font-weight: 600;">
                     <i class="bi bi-list me-2"></i>Liens configurés ({{ liens.count }})
                 </h5>
                 {% if liens %}
-                <div class="d-flex gap-2">
-                    <a href="{% url 'liens:lien_create' client.pk %}" class="btn"
-                       style="background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%); color: white; border: none; font-weight: 600; border-radius: 12px; box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4); font-size: 0.875rem;">
-                        <i class="bi bi-plus-lg me-1"></i>Nouveau lien
-                    </a>
-                    <button class="btn" data-bs-toggle="modal" data-bs-target="#addEmailModal"
-                            style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; border: none; font-weight: 600; border-radius: 12px; box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4); font-size: 0.875rem;">
-                        <i class="bi bi-envelope-plus me-1"></i>Ajouter un email
-                    </button>
-                </div>
+                <a href="{% url 'liens:lien_create' client.pk %}" class="btn"
+                   style="background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%); color: white; border: none; font-weight: 600; border-radius: 12px; box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4); font-size: 0.875rem;">
+                    <i class="bi bi-plus-lg me-1"></i>Nouveau lien
+                </a>
                 {% endif %}
             </div>
         </div>
@@ -223,9 +217,97 @@
                 <a href="{% url 'liens:lien_create' client.pk %}" class="btn client-first-link-btn">
                     <i class="bi bi-plus-lg me-2"></i>Ajouter le premier lien
                 </a>
-                <button class="btn mt-2" data-bs-toggle="modal" data-bs-target="#addEmailModal"
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Liste des emails -->
+    <div class="card" style="background: #111111; border: 1px solid #374151; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 style="color: #ffffff; margin-bottom: 0; font-weight: 600;">
+                    <i class="bi bi-envelope me-2"></i>Adresses email ({{ emails.count }})
+                </h5>
+                {% if emails %}
+                <button class="btn" data-bs-toggle="modal" data-bs-target="#addEmailModal"
+                        style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; border: none; font-weight: 600; border-radius: 12px; box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4); font-size: 0.875rem;">
+                    <i class="bi bi-envelope-plus me-1"></i>Nouvel email
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body p-0">
+            {% if emails %}
+            <div class="table-responsive">
+                <table class="table table-hover table-dark">
+                    <thead style="background: #0a0a0a !important;">
+                        <tr>
+                            <th style="color: #ffffff; font-weight: 700; text-transform: uppercase; font-size: 0.875rem; border-color: #374151;">#</th>
+                            <th style="color: #ffffff; font-weight: 700; text-transform: uppercase; font-size: 0.875rem; border-color: #374151;">Nom d'affichage</th>
+                            <th class="d-none d-md-table-cell" style="color: #ffffff; font-weight: 700; text-transform: uppercase; font-size: 0.875rem; border-color: #374151;">Adresse email</th>
+                            <th class="d-none d-lg-table-cell" style="color: #ffffff; font-weight: 700; text-transform: uppercase; font-size: 0.875rem; border-color: #374151;">Date d'ajout</th>
+                            <th style="color: #ffffff; font-weight: 700; text-transform: uppercase; font-size: 0.875rem; border-color: #374151;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for email in emails %}
+                        <tr style="cursor: pointer; background: #111111; border-color: #374151; transition: all 0.3s ease;"
+                            onmouseover="this.style.background='#1a1a1a'; this.style.transform='scale(1.01)'"
+                            onmouseout="this.style.background='#111111'; this.style.transform='scale(1)'">
+                            <td class="text-center">
+                                <div style="width: 30px; height: 30px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.875rem; margin: 0 auto;">
+                                    {{ forloop.counter }}
+                                </div>
+                            </td>
+                            <td>
+                                <div style="color: #ffffff; font-weight: 600; margin-bottom: 0.25rem;">{{ email.titre }}</div>
+                                <div class="d-md-none">
+                                    <small style="color: #9ca3af;">{{ email.url|slice:"7:"|truncatechars:30 }}</small>
+                                </div>
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                                <span style="color: #d1d5db;">{{ email.url|slice:"7:" }}</span>
+                            </td>
+                            <td class="d-none d-lg-table-cell">
+                                <small style="color: #9ca3af;">{{ email.date_creation|date:"d/m/Y" }}</small>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" onclick="event.stopPropagation();">
+                                    <a href="{{ email.url }}"
+                                       class="btn"
+                                       style="border: 1px solid #3b82f6; color: #3b82f6; background: transparent; border-radius: 8px;"
+                                       title="Ouvrir l'email">
+                                        <i class="bi bi-envelope"></i>
+                                    </a>
+                                    <a href="{% url 'liens:lien_edit' email.pk %}"
+                                       class="btn"
+                                       style="border: 1px solid #8b5cf6; color: #8b5cf6; background: transparent; border-radius: 8px;"
+                                       title="Modifier l'email">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'liens:lien_delete' email.pk %}"
+                                       class="btn"
+                                       style="border: 1px solid #ef4444; color: #ef4444; background: transparent; border-radius: 8px;"
+                                       title="Supprimer l'email"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet email ?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5 client-no-links">
+                <i class="bi bi-envelope" style="font-size: 3rem; color: #9ca3af;"></i>
+                <h5 class="mt-3" style="color: #ffffff;">Aucune adresse email configurée</h5>
+                <p style="color: #d1d5db; margin-bottom: 2rem;">Ajoutez des adresses email pour permettre aux visiteurs de vous contacter.</p>
+                <button class="btn" data-bs-toggle="modal" data-bs-target="#addEmailModal"
                         style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; border: none; font-weight: 600; border-radius: 12px; box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);">
-                    <i class="bi bi-envelope-plus me-2"></i>Ou ajouter un email
+                    <i class="bi bi-envelope-plus me-2"></i>Ajouter le premier email
                 </button>
             </div>
             {% endif %}
@@ -246,9 +328,10 @@
             <form method="post" action="{% url 'liens:lien_create' client.pk %}">
                 <div class="modal-body client-modal-body">
                     {% csrf_token %}
+                    <input type="hidden" name="is_email" value="true">
                     <div class="mb-3">
-                        <label for="email" class="form-label client-modal-label">Adresse email *</label>
-                        <input type="email" class="form-control client-modal-input" id="email" name="url" required
+                        <label for="email_address" class="form-label client-modal-label">Adresse email *</label>
+                        <input type="email" class="form-control client-modal-input" id="email_address" name="email_address" required
                                placeholder="contact@exemple.com"
                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                         <div class="form-text client-modal-help">
@@ -258,8 +341,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="email_titre" class="form-label client-modal-label">Nom d'affichage *</label>
-                        <input type="text" class="form-control client-modal-input" id="email_titre" name="titre" required
+                        <label for="email_title" class="form-label client-modal-label">Nom d'affichage *</label>
+                        <input type="text" class="form-control client-modal-input" id="email_title" name="titre" required
                                placeholder="Email professionnel, Contact, Support..."
                                value="Email">
                         <div class="form-text client-modal-help">
