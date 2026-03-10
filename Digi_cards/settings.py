@@ -64,9 +64,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Digi_cards.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': dj_database_url.parse(config('DATABASE_URL', default='sqlite:///db.sqlite3')),
-}
+#DATABASES = {
+#    'default': dj_database_url.parse(config('DATABASE_URL', default='sqlite:///db.sqlite3')),
+#}
 
 DATABASES = {
     'default': {
